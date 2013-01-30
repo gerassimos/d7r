@@ -1,0 +1,10 @@
+name = facebook page feeds
+description = Agregate feeds from facebook pages directly into nodes.
+core = 7.x
+
+; to create a linked button to configuration page 
+; in the modules page.
+configure = admin/config/content/feeds_facebook
+files[] = current_posts.test
+
+

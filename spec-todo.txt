@@ -1,0 +1,43 @@
+=======================================
+drupal site
+ image gallery / project node with 10 (dynamic) images
+  facebook integration for gallery
+  image with geo coordinates
+	
+  google maps 
+ structres
+ theme
+=======================================
+java library for restful services
+ UML
+ node type
+  create a new node type with name "project" 
+  page
+ http client
+  apache
+  urlConnection
+  
+=======================================
+android client
+
+=======================================
+php learnig
+
+ref:
+http://php.net/manual/en/index.php
+ref:
+PHP and MySQL Web Development 4th Edition.pdf
+
+create development/debug environment
+ eclipse php plug in
+ x-debug
+
+=======================================
+git 
+push pull merge branch rebase status log 
+=======================================
+wireframe tool
+=======================================
+facebook API
+=======================================
+

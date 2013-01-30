@@ -1,0 +1,314 @@
+<?php
+
+require ("FbPage.php");
+
+
+
+/**
+ * @file
+ * Agregate feeds from facebook pages directly into nodes.
+ */
+
+
+
+/**
+ * Implements hook_help.
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+function feeds_facebook_help($path, $arg) {
+
+  switch ($path) {
+    case "admin/help#feeds_facebook":
+      return '<p>' . t("Agregate feeds from facebook pages directly into nodes...") . '</p>';
+      break;
+  }
+
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function feeds_facebook_block_info() {
+  $blocks['feeds_facebook'] = array(
+      'info' => t('feeds facebook test'), //The name that will appear in the block list.
+      'cache' => DRUPAL_CACHE_PER_ROLE, //Default
+  );
+  
+  $blocks['feeds_facebook_page_users'] = array(
+  		'info' => t('feeds facebook page users'), //The name that will appear in the block list.
+  		'cache' => DRUPAL_CACHE_PER_ROLE, //Default
+  );
+  
+  return $blocks;
+}
+
+/**
+ * Custom content function.
+ *
+ * Set beginning and end dates, retrieve posts from database
+ * saved in that time period.
+ *
+ * @return
+ *   A result set of the targeted posts.
+ */
+function feeds_facebook_contents($display){
+  //Get today's date.
+  $today = getdate();
+  //Calculate the date a week ago.
+  $start_time = mktime(0, 0, 0,$today['mon'],($today['mday'] - 147), $today['year']);
+  //Get all posts from one week ago to the present.
+  $end_time = time();
+  
+  
+  //read from DB user settings 
+  $max_num = variable_get('feeds_facebook_max', 3);
+
+  //Use Database API to retrieve current posts.
+  $query = db_select('node', 'n')
+  ->fields('n', array('nid', 'title', 'created'))
+  ->condition('status', 1) //Published.
+  ->condition('created', array($start_time, $end_time), 'BETWEEN')
+  ->orderBy('created', 'DESC'); //Most recent first. Query paused here.
+  
+  /*
+  if ($display == 'block'){
+    // Restrict the range if called with 'block' argument.
+    $query->range(0, $max_num);
+  } //Now proceeds to execute().
+  //If called by page, query proceeds directly to execute().
+  */
+  $query->range(0, $max_num);
+  
+  return $query->execute();
+}
+
+
+function feeds_facebook_block_view($delta = '') {
+  switch($delta){
+    case 'feeds_facebook':
+      $block['subject'] = t('feed of facebook page');
+      if(user_access('access content')){
+      	
+      	//TEST
+      	// testGetImageFromExtUrlAndSave();
+        // _feeds_facebook_testGetImageFromExtUrlAndSave();
+      	
+      	
+        //Retrieve and process data here.
+        //Use our custom function to retrieve data.
+        $result = feeds_facebook_contents('block');
+        
+        
+        
+        //Array to contain items for the block to render.
+        $items = array();
+        //Iterate over the resultset and format as links.
+        foreach ($result as $node){
+          $items[] = array(
+              'data' => l($node->title, 'node/' . $node->nid),
+          );
+        }
+
+        
+        if (empty($items)) { //No content in the last week.
+          $block['content'] = t('No posts available.');
+        } else {
+          //Pass data through theme function.
+          $block['content'] = theme('item_list', array(
+              'items' => $items));
+        }
+        return $block;
+      }
+      
+      case 'feeds_facebook_page_users':
+      	$block['subject'] = t('feeds facebook page users');
+      	if(user_access('access content')){
+      		
+      		
+      		$fbUsersImg50x50Src = _feeds_facebook_testFbPageClass();
+      		        //Array to contain items for the block to render.
+			      		$items = array();
+      		        //Iterate over the resultset and format as links.
+      		        foreach ($fbUsersImg50x50Src as $key => $value){
+      		          $items[] = array(
+      		              'data' => l($key, $value),
+      		          );
+      		        }
+      		
+      		
+      		if (empty($items)) { //No content in the last week.
+      			$block['content'] = t('No posts available.');
+      		} else {
+      			//Pass data through theme function.
+      			$block['content'] = theme('item_list', array(
+      					'items' => $items));
+      		}
+      		return $block;
+      	}
+      	
+  }
+  
+}
+
+
+/**
+ * Implements hook_menu().
+ */
+function feeds_facebook_menu() {
+  $items = array();
+
+  $items['admin/config/content/feeds_facebook'] = array(
+      'title' => 'feeds facebook',
+      'description' => 'Configuration for feeds_facebook module',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('feeds_facebook_form'),
+      'access arguments' => array('access administration pages'),
+      'type' => MENU_NORMAL_ITEM,
+  );
+  
+  
+  $items['feeds_facebook'] = array(
+      'title' => 'feeds facebook page',
+      'page callback' => '_feeds_facebook_page',
+      'access arguments' => array('access current_posts content'),
+      'type' => MENU_NORMAL_ITEM, //Will appear in Navigation menu.
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback: Current posts settings
+ *
+ * @see current_posts_menu()
+ */
+function feeds_facebook_form($form, &$form_state) {
+  $form['feeds_facebook_max'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum number of posts'),
+      '#default_value' => variable_get('feeds_facebook_max', 3),
+      '#size' => 2,
+      '#maxlength' => 2,
+      '#description' => t('The maximum number of links to display in the block.'),
+      '#required' => TRUE,
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements validation from the Form API.
+ *
+ * @param $form
+ *   A structured array containing the elements and properties of the form.
+ * @param $form_state
+ *   An array that stores information about the form's current state
+ *   during processing.
+ */
+function feeds_facebook_form_validate($form, &$form_state){
+  $max_num = $form_state['values']['feeds_facebook_max'];
+  if (!is_numeric($max_num)){
+    form_set_error('feeds_facebook_max', t('You must enter a number for the maximum number of posts to display.'));
+  }
+  else if ($max_num <= 0){
+    form_set_error('feeds_facebook', t('Maximum number of posts to display must be positive.'));
+  }
+}
+
+
+
+/**
+ * Implements hook_permission().
+ */
+function feeds_facebook_permission() {
+  return array(
+      'access feeds_facebook content' => array(
+          'title' => t('Access content for the feeds_facebook module'),
+      )
+  );
+}
+
+/**
+ * Custom page callback function, declared in current_posts_menu().
+ */
+function _feeds_facebook_page() {
+  $result = feeds_facebook_contents('page');
+  //Array to contain items for the page to render.
+  $items = array();
+  //Iterate over the resultset and format as links.
+  foreach ($result as $node) {
+    $items[] = array(
+        'data' => l($node->title, 'node/' . $node->nid),
+    );
+  }
+
+  if (empty($items)) { //No content in the last week.
+    $page_array['feeds_facebook_arguments'] = array(
+        //Title serves as page subtitle
+        '#title' => t('All posts from the last week'),
+        '#markup' => t('No posts available.'),
+    );
+  }
+
+  else {
+    $page_array['feeds_facebook_arguments'] = array(
+        '#title' => t('All posts from the last week'),
+        '#items' => $items,
+        //Theme hook with suggestion.
+        '#theme' => 'item_list__current_posts',
+    );
+
+  }
+  return $page_array;
+}
+
+function _feeds_facebook_testGetImageFromExtUrlAndSave(){
+
+  $aContext = array(
+      'http' => array(
+          'proxy' => 'tcp://icache:80',
+          'request_fulluri' => true,
+      ),
+  );
+  $cxContext = stream_context_create($aContext);
+
+  $image = file_get_contents('http://drupal.org/files/issues/druplicon_2.png',False, $cxContext );
+  $file = file_save_data($image, 'public://druplicon.png',FILE_EXISTS_REPLACE);
+}
+
+function _feeds_facebook_testFbPageClass(){
+  $url_fb_pauls_surfclub='https://graph.facebook.com/pauls.surfclub';
+  $fbPage = new FbPage($url_fb_pauls_surfclub, _feeds_facebook_getContext(true));
+  $fbPage->getContents();
+  $fbusers = $fbPage->fbUsersThatLikeAlbums;
+  $fbUsersImg50x50Src= $fbPage->fbUsersImg50x50SrcThatLikeAlbums;
+  $fbUsersImg200pxWidthSrc= $fbPage->fbUsersImg200pxWidthSrcThatLikeAlbums;
+  $fbPage->getfbUsersImg50x50AsFileObj();
+  return $fbUsersImg50x50Src;
+}
+
+function _feeds_facebook_getContext($useProxy){
+	$aContext = array(
+			'http' => array(
+					'proxy' => 'tcp://icache:80',
+					'request_fulluri' => true,
+			),
+	);
+	$cxContext = stream_context_create($aContext);
+	
+	if($useProxy){
+		return $cxContext;
+	}else{
+		return NULL;
+	}
+	
+}
+
+
+
