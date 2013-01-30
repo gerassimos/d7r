@@ -1,6 +1,9 @@
 ===============================
 2013_01_30
 
+init github repository 
+https://github.com/gerassimos/d7r.git
+
 Feed aggregator changes
 Feed aggregator for windsurfing aggelies	0 items	never	never	edit	remove items	update items
 feed from www.boards.gr	0 items	never	never	edit	remove items	update items
