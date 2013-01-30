@@ -1,1 +1,4 @@
 #eclipse files
+.settings/
+.project
+.buildpath
