@@ -1,4 +1,13 @@
 ===============================
+2013_01_31
+module dev
+new page feeds_facebook_page_users
+http://localhost/d7r/feeds_facebook_page_users
+
+fix
+Access content for the feeds_facebook module 
+enabled
+===============================
 2013_01_30
 
 init github repository 

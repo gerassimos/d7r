@@ -77,7 +77,7 @@ class FbPage{
 		$data = $jsonOject->albums->data;
 
 		foreach ($data as $album){
-			echo "<br>".$album->id. "</br>";
+			//echo "<br>".$album->id. "</br>";
 			if(property_exists($album, 'likes')){
 				$likes = $album->likes;
 				foreach($likes as $like ){

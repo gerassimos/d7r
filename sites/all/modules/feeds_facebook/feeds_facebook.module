@@ -131,7 +131,8 @@ function feeds_facebook_block_view($delta = '') {
       	if(user_access('access content')){
       		
       		
-      		$fbUsersImg50x50Src = _feeds_facebook_testFbPageClass();
+//       		$fbUsersImg50x50Src = _feeds_facebook_testFbPageClass();
+      		$fbUsersImg50x50Src = array();
       		        //Array to contain items for the block to render.
 			      		$items = array();
       		        //Iterate over the resultset and format as links.
@@ -176,8 +177,15 @@ function feeds_facebook_menu() {
   $items['feeds_facebook'] = array(
       'title' => 'feeds facebook page',
       'page callback' => '_feeds_facebook_page',
-      'access arguments' => array('access current_posts content'),
+      'access arguments' => array('access feeds_facebook content'),
       'type' => MENU_NORMAL_ITEM, //Will appear in Navigation menu.
+  );
+  
+  $items['feeds_facebook_page_users'] = array(
+  		'title' => 'facebook page users',
+  		'page callback' => '_feeds_facebook_page_users',
+  		'access arguments' => array('access feeds_facebook content'),
+  		'type' => MENU_NORMAL_ITEM, //Will appear in Navigation menu.
   );
 
   return $items;
@@ -268,6 +276,39 @@ function _feeds_facebook_page() {
   return $page_array;
 }
 
+/**
+ * Custom page callback function, declared in current_posts_menu().
+ */
+function _feeds_facebook_page_users() {
+	$fbUsersImg50x50Src = _feeds_facebook_testFbPageClass();
+	$items = array();
+	//Iterate over the resultset and format as links.
+	foreach ($fbUsersImg50x50Src as $key => $value){
+		$items[] = array(
+				'data' => l($key, $value),
+		);
+	}
+
+	if (empty($items)) { //No content in the last week.
+		$page_array['feeds_facebook_arguments'] = array(
+				//Title serves as page subtitle
+				'#title' => t('All users from the facebook page'),
+				'#markup' => t('No users available.'),
+		);
+	}
+
+	else {
+		$page_array['feeds_facebook_arguments'] = array(
+				'#title' => t('All users from the facebook page'),
+				'#items' => $items,
+				//Theme hook with suggestion.
+				'#theme' => 'item_list__current_posts',
+		);
+
+	}
+	return $page_array;
+}
+
 function _feeds_facebook_testGetImageFromExtUrlAndSave(){
 
   $aContext = array(
@@ -289,7 +330,7 @@ function _feeds_facebook_testFbPageClass(){
   $fbusers = $fbPage->fbUsersThatLikeAlbums;
   $fbUsersImg50x50Src= $fbPage->fbUsersImg50x50SrcThatLikeAlbums;
   $fbUsersImg200pxWidthSrc= $fbPage->fbUsersImg200pxWidthSrcThatLikeAlbums;
-  $fbPage->getfbUsersImg50x50AsFileObj();
+  //$fbPage->getfbUsersImg50x50AsFileObj();
   return $fbUsersImg50x50Src;
 }
 
