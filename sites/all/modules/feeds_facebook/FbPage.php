@@ -24,16 +24,15 @@ class FbPage{
 
 	}
 
+	
 	function getContents(){
-
-		$this->fb_page_albums_contents = file_get_contents($this->url_page.'?fields=albums', False, $this->context);
-		$jsonOject = json_decode($this->fb_page_albums_contents);
-		$this->jsonObj_fb_page_albums_contents =$jsonOject ;
-		$fbUserArray =   $this->extractFbUsers($jsonOject);
-		$this->fbUsersThatLikeAlbums = $fbUserArray [0];
-		$this->fbUsersImg50x50SrcThatLikeAlbums = $fbUserArray [1];
-		$this->fbUsersImg200pxWidthSrcThatLikeAlbums = $fbUserArray [2];
-
+	  $this->fb_page_albums_contents = file_get_contents($this->url_page.'?fields=albums', False, $this->context);
+	  $jsonOject = json_decode($this->fb_page_albums_contents);
+	  $this->jsonObj_fb_page_albums_contents =$jsonOject ;
+	  $fbUserArray =   $this->extractFbUsers($jsonOject);
+	  $this->fbUsersThatLikeAlbums = $fbUserArray [0];
+	  $this->fbUsersImg50x50SrcThatLikeAlbums = $fbUserArray [1];
+	  $this->fbUsersImg200pxWidthSrcThatLikeAlbums = $fbUserArray [2];
 	}
 
 
@@ -63,19 +62,13 @@ class FbPage{
 	 *
 	 */
 	public function extractFbUsers($jsonOject){
-
-
 		$map_UserId_UserName = array();
 		$map_UserId_UserImg50x50Src= array();
 		$map_UserId_UserImg200pxWidthSrc= array();
-
-
-
 		// $albums = $json_response['albums'];
-
 		// echo "response ".$response;
+		if( (!empty($jsonOject)) &&property_exists($jsonOject, 'albums')){
 		$data = $jsonOject->albums->data;
-
 		foreach ($data as $album){
 			//echo "<br>".$album->id. "</br>";
 			if(property_exists($album, 'likes')){
@@ -93,9 +86,9 @@ class FbPage{
 						$map_UserId_UserImg50x50Src[$fid] = "https://graph.facebook.com/".$fid."/picture";
 						$map_UserId_UserImg200pxWidthSrc[$fid] = "https://graph.facebook.com/".$fid."/picture?type=large";
 					}
-
 				}
 			}
+		}
 		}
 		$result = array($map_UserId_UserName,$map_UserId_UserImg50x50Src,$map_UserId_UserImg200pxWidthSrc );
 		return $result ;

@@ -131,7 +131,7 @@ function feeds_facebook_block_view($delta = '') {
       	if(user_access('access content')){
       		
       		
-//       		$fbUsersImg50x50Src = _feeds_facebook_testFbPageClass();
+//       		$fbUsersImg50x50Src = _feeds_facebook_getFbPageContents();
       		$fbUsersImg50x50Src = array();
       		        //Array to contain items for the block to render.
 			      		$items = array();
@@ -206,6 +206,17 @@ function feeds_facebook_form($form, &$form_state) {
       '#description' => t('The maximum number of links to display in the block.'),
       '#required' => TRUE,
   );
+  
+  $form['feeds_facebook_max'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum number of posts'),
+      '#default_value' => variable_get('feeds_facebook_max', 3),
+      '#size' => 2,
+      '#maxlength' => 2,
+      '#description' => t('The maximum number of links to display in the block.'),
+      '#required' => TRUE,
+  );
+  
 
   return system_settings_form($form);
 }
@@ -280,7 +291,8 @@ function _feeds_facebook_page() {
  * Custom page callback function, declared in current_posts_menu().
  */
 function _feeds_facebook_page_users() {
-	$fbUsersImg50x50Src = _feeds_facebook_testFbPageClass();
+	$fbPage = _feeds_facebook_getFbPageContents();
+	$fbUsersImg50x50Src = $fbPage->fbUsersThatLikeAlbums;
 	$items = array();
 	//Iterate over the resultset and format as links.
 	foreach ($fbUsersImg50x50Src as $key => $value){
@@ -323,15 +335,15 @@ function _feeds_facebook_testGetImageFromExtUrlAndSave(){
   $file = file_save_data($image, 'public://druplicon.png',FILE_EXISTS_REPLACE);
 }
 
-function _feeds_facebook_testFbPageClass(){
+function _feeds_facebook_getFbPageContents(){
   $url_fb_pauls_surfclub='https://graph.facebook.com/pauls.surfclub';
-  $fbPage = new FbPage($url_fb_pauls_surfclub, _feeds_facebook_getContext(true));
+  $fbPage = new FbPage($url_fb_pauls_surfclub, _feeds_facebook_getContext(false));
   $fbPage->getContents();
   $fbusers = $fbPage->fbUsersThatLikeAlbums;
   $fbUsersImg50x50Src= $fbPage->fbUsersImg50x50SrcThatLikeAlbums;
   $fbUsersImg200pxWidthSrc= $fbPage->fbUsersImg200pxWidthSrcThatLikeAlbums;
   //$fbPage->getfbUsersImg50x50AsFileObj();
-  return $fbUsersImg50x50Src;
+  return $fbPage;
 }
 
 function _feeds_facebook_getContext($useProxy){
