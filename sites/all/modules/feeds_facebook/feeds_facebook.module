@@ -90,71 +90,56 @@ function feeds_facebook_contents($display){
 
 
 function feeds_facebook_block_view($delta = '') {
-  switch($delta){
-    case 'feeds_facebook':
-      $block['subject'] = t('feed of facebook page');
-      if(user_access('access content')){
-      	
-      	//TEST
-      	// testGetImageFromExtUrlAndSave();
-        // _feeds_facebook_testGetImageFromExtUrlAndSave();
-      	
-      	
-        //Retrieve and process data here.
-        //Use our custom function to retrieve data.
-        $result = feeds_facebook_contents('block');
-        
-        
-        
-        //Array to contain items for the block to render.
-        $items = array();
-        //Iterate over the resultset and format as links.
-        foreach ($result as $node){
-          $items[] = array(
-              'data' => l($node->title, 'node/' . $node->nid),
-          );
-        }
-
-        
-        if (empty($items)) { //No content in the last week.
-          $block['content'] = t('No posts available.');
-        } else {
-          //Pass data through theme function.
-          $block['content'] = theme('item_list', array(
-              'items' => $items));
-        }
-        return $block;
-      }
-      
-      case 'feeds_facebook_page_users':
-      	$block['subject'] = t('feeds facebook page users');
-      	if(user_access('access content')){
-      		
-      		
-//       		$fbUsersImg50x50Src = _feeds_facebook_getFbPageContents();
-      		$fbUsersImg50x50Src = array();
-      		        //Array to contain items for the block to render.
-			      		$items = array();
-      		        //Iterate over the resultset and format as links.
-      		        foreach ($fbUsersImg50x50Src as $key => $value){
-      		          $items[] = array(
-      		              'data' => l($key, $value),
-      		          );
-      		        }
-      		
-      		
-      		if (empty($items)) { //No content in the last week.
-      			$block['content'] = t('No posts available.');
-      		} else {
-      			//Pass data through theme function.
-      			$block['content'] = theme('item_list', array(
-      					'items' => $items));
-      		}
-      		return $block;
-      	}
-      	
-  }
-  
+	switch($delta){
+		case 'feeds_facebook':
+			$block['subject'] = t('feed of facebook page');
+			if(user_access('access content')){
+				//TEST
+				// testGetImageFromExtUrlAndSave();
+				// _feeds_facebook_testGetImageFromExtUrlAndSave();
+				//Retrieve and process data here.
+				//Use our custom function to retrieve data.
+				$result = feeds_facebook_contents('block');
+				//Array to contain items for the block to render.
+				$items = array();
+				//Iterate over the resultset and format as links.
+				foreach ($result as $node){
+					$items[] = array(
+							'data' => l($node->title, 'node/' . $node->nid),
+					);
+				}
+				if (empty($items)) { //No content in the last week.
+					$block['content'] = t('No posts available.');
+				} else {
+					//Pass data through theme function.
+					$block['content'] = theme('item_list', array(
+							'items' => $items));
+				}
+				return $block;
+			}
+		case 'feeds_facebook_page_users':
+			$block['subject'] = t('feeds facebook page users');
+			if(user_access('access content')){
+				//       		$fbUsersImg50x50Src = _feeds_facebook_getFbPageContents();
+				$fbUsersImg50x50Src = array();
+				//Array to contain items for the block to render.
+				$items = array();
+				//Iterate over the resultset and format as links.
+				foreach ($fbUsersImg50x50Src as $key => $value){
+					$items[] = array(
+							'data' => l($key, $value),
+					);
+				}
+				if (empty($items)) { //No content in the last week.
+					$block['content'] = t('No posts available.');
+				} else {
+					//Pass data through theme function.
+					$block['content'] = theme('item_list', array(
+							'items' => $items));
+				}
+				return $block;
+			}
+	}
 }
 
 
@@ -183,7 +168,7 @@ function feeds_facebook_menu() {
   
   $items['feeds_facebook_page_users'] = array(
   		'title' => 'facebook page users',
-  		'page callback' => '_feeds_facebook_page_users',
+  		'page callback' => '_feeds_facebook_fbUsersImg50x50',
   		'access arguments' => array('access feeds_facebook content'),
   		'type' => MENU_NORMAL_ITEM, //Will appear in Navigation menu.
   );
@@ -290,7 +275,7 @@ function _feeds_facebook_page() {
 /**
  * Custom page callback function, declared in current_posts_menu().
  */
-function _feeds_facebook_page_users() {
+function _feeds_facebook_fbUsersId() {
 	$fbPage = _feeds_facebook_getFbPageContents();
 	$fbUsersImg50x50Src = $fbPage->fbUsersThatLikeAlbums;
 	$items = array();
@@ -300,7 +285,6 @@ function _feeds_facebook_page_users() {
 				'data' => l($key, $value),
 		);
 	}
-
 	if (empty($items)) { //No content in the last week.
 		$page_array['feeds_facebook_arguments'] = array(
 				//Title serves as page subtitle
@@ -308,18 +292,49 @@ function _feeds_facebook_page_users() {
 				'#markup' => t('No users available.'),
 		);
 	}
-
 	else {
 		$page_array['feeds_facebook_arguments'] = array(
 				'#title' => t('All users from the facebook page'),
 				'#items' => $items,
 				//Theme hook with suggestion.
-				'#theme' => 'item_list__current_posts',
+				'#theme' => 'item_list__feeds_facebook',
 		);
-
 	}
 	return $page_array;
 }
+
+/**
+ * Custom page callback function.
+ */
+function _feeds_facebook_fbUsersImg50x50() {
+	$fbPage = _feeds_facebook_getFbPageContents();
+	$fbUsersImg50x50Src = $fbPage->fbUsersImg50x50SrcThatLikeAlbums;
+	
+	$items = array();
+	//Iterate over the resultset and format as links.
+	foreach ($fbUsersImg50x50Src as $key => $value){
+		$items[] = array(
+				'data' => l("<img src = \"$value\" />", $value, array('html'=>TRUE)),
+		);
+	}
+	if (empty($items)) { //No content in the last week.
+		$page_array['feeds_facebook_arguments'] = array(
+				//Title serves as page subtitle
+				'#title' => t('All users from the facebook page'),
+				'#markup' => t('No users available.'),
+		);
+	}
+	else {
+		$page_array['feeds_facebook_arguments'] = array(
+				'#title' => t('All users from the facebook page'),
+				'#items' => $items,
+				//Theme hook with suggestion.
+				'#theme' => 'item_list__feeds_facebook',
+		);
+	}
+	return $page_array;
+}
+
 
 function _feeds_facebook_testGetImageFromExtUrlAndSave(){
 
@@ -337,7 +352,7 @@ function _feeds_facebook_testGetImageFromExtUrlAndSave(){
 
 function _feeds_facebook_getFbPageContents(){
   $url_fb_pauls_surfclub='https://graph.facebook.com/pauls.surfclub';
-  $fbPage = new FbPage($url_fb_pauls_surfclub, _feeds_facebook_getContext(false));
+  $fbPage = new FbPage($url_fb_pauls_surfclub, _feeds_facebook_getContext(true));
   $fbPage->getContents();
   $fbusers = $fbPage->fbUsersThatLikeAlbums;
   $fbUsersImg50x50Src= $fbPage->fbUsersImg50x50SrcThatLikeAlbums;
