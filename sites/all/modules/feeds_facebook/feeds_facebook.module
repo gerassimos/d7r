@@ -352,7 +352,7 @@ function _feeds_facebook_testGetImageFromExtUrlAndSave(){
 
 function _feeds_facebook_getFbPageContents(){
   $url_fb_pauls_surfclub='https://graph.facebook.com/pauls.surfclub';
-  $fbPage = new FbPage($url_fb_pauls_surfclub, _feeds_facebook_getContext(false));
+  $fbPage = new FbPage($url_fb_pauls_surfclub, _feeds_facebook_getContext(true));
   $fbPage->getContents();
   $fbusers = $fbPage->fbUsersThatLikeAlbums;
   $fbUsersImg50x50Src= $fbPage->fbUsersImg50x50SrcThatLikeAlbums;

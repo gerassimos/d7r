@@ -65,65 +65,61 @@ class FbPage{
 		$map_UserId_UserName = array();
 		$map_UserId_UserImg50x50Src= array();
 		$map_UserId_UserImg200pxWidthSrc= array();
-		// $albums = $json_response['albums'];
-		// echo "response ".$response;
+		
+		$map_UserId_UserName_p = array();
+		$map_UserId_UserImg50x50Src_p = array();
+		$map_UserId_UserImg200pxWidthSrc_p = array();
+		
 		$jsonOject = json_decode($this->fb_page_albums_contents);
 		if( (!empty($jsonOject)) &&property_exists($jsonOject, 'albums')){
-		$data = $jsonOject->albums->data;
-		foreach ($data as $album){
-			//echo "<br>".$album->id. "</br>";
-			if(property_exists($album, 'likes')){
-				$likes = $album->likes;
-				foreach($likes as $like ){
-					$data = $likes->data;
-					foreach($data as $fb_user_id_name ) {
-						// 					echo '</br>';
-						$fid = $fb_user_id_name->id;
-						$fname = $fb_user_id_name->name;
-
-						// 					echo "name ".$fname;
-						// 					echo "id ".$fb_user_id_name->id;
-						$map_UserId_UserName[$fid]=$fname ;
-						$map_UserId_UserImg50x50Src[$fid] = "https://graph.facebook.com/".$fid."/picture";
-						$map_UserId_UserImg200pxWidthSrc[$fid] = "https://graph.facebook.com/".$fid."/picture?type=large";
+			$data = $jsonOject->albums->data;
+			foreach ($data as $album){
+				if(property_exists($album, 'likes')){
+					$likes = $album->likes;
+					foreach($likes as $like ){
+						$data = $likes->data;
+						foreach($data as $fb_user_id_name ) {
+							$fid = $fb_user_id_name->id;
+							$fname = $fb_user_id_name->name;
+							$map_UserId_UserName[$fid]=$fname ;
+							$map_UserId_UserImg50x50Src[$fid] = "https://graph.facebook.com/".$fid."/picture";
+							$map_UserId_UserImg200pxWidthSrc[$fid] = "https://graph.facebook.com/".$fid."/picture?type=large";
+						}
 					}
 				}
 			}
 		}
-		}
-		
-		
+
 		$jsonOject = json_decode($this->fb_page_albums_photos_like);
-		
 		if( (!empty($jsonOject)) &&property_exists($jsonOject, 'albums')){
-		  $data = $jsonOject->albums->data;
-		  foreach ($data as $album){
-		    //echo "<br>".$album->id. "</br>";
-		    if(property_exists($album, 'likes')){
-		      $likes = $album->likes;
-		      foreach($likes as $like ){
-		        $data = $likes->data;
-		        foreach($data as $fb_user_id_name ) {
-		          // 					echo '</br>';
-		          $fid = $fb_user_id_name->id;
-		          $fname = $fb_user_id_name->name;
-		
-		          // 					echo "name ".$fname;
-		          // 					echo "id ".$fb_user_id_name->id;
-		          $map_UserId_UserName[$fid]=$fname ;
-		          $map_UserId_UserImg50x50Src[$fid] = "https://graph.facebook.com/".$fid."/picture";
-		          $map_UserId_UserImg200pxWidthSrc[$fid] = "https://graph.facebook.com/".$fid."/picture?type=large";
-		        }
-		      }
-		    }
+			$data = $jsonOject->albums->data;
+			foreach ($data as $album){
+				//echo "<br>".$album->id. "</br>";
+				if(property_exists($album, 'photos')){
+					$data_photos = $album->photos->data;
+					foreach ($data_photos as $photo){
+						if(property_exists($photo, 'likes')){
+							$likes = $photo->likes;
+							foreach($likes as $like ){
+								$data = $likes->data;
+								foreach($data as $fb_user_id_name ) {
+									$fid = $fb_user_id_name->id;
+									$fname = $fb_user_id_name->name;
+									$map_UserId_UserName_p[$fid]=$fname ;
+									$map_UserId_UserImg50x50Src_p[$fid] = "https://graph.facebook.com/".$fid."/picture";
+									$map_UserId_UserImg200pxWidthSrc_p[$fid] = "https://graph.facebook.com/".$fid."/picture?type=large";
+								}
+							}
+						}
+					}
 		  }
+			}
 		}
-		
-		
 		
 		$result = array($map_UserId_UserName,$map_UserId_UserImg50x50Src,$map_UserId_UserImg200pxWidthSrc );
 		return $result ;
 	}
+	
 	
 	public function getfbUsersImg50x50AsFileObj(){
 		$imagesFileArray = array();
