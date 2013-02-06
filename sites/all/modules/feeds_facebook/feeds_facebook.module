@@ -308,7 +308,8 @@ function _feeds_facebook_fbUsersId() {
  */
 function _feeds_facebook_fbUsersImg50x50() {
 	$fbPage = _feeds_facebook_getFbPageContents();
-	$fbUsersImg50x50Src = $fbPage->fbUsersImg50x50SrcThatLikeAlbums;
+// 	$fbUsersImg50x50Src = $fbPage->fbUsersImg50x50SrcThatLikeAlbums;
+	$fbUsersImg50x50Src = $fbPage->fbPhotosSrc;
 	
 	$items = array();
 	//Iterate over the resultset and format as links.

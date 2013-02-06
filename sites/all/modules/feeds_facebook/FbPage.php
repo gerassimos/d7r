@@ -8,6 +8,7 @@ class FbPage{
 	private $fbUsersThatLikeAlbums ;
 	private $fbUsersImg50x50SrcThatLikeAlbums ;
 	private $fbUsersImg200pxWidthSrcThatLikeAlbums ;
+	private $fbPhotosSrc;
 	private $context;
 
 
@@ -21,18 +22,18 @@ class FbPage{
 	
 	function getContents(){
 	  $this->fb_page_albums_contents = file_get_contents($this->url_page.'?fields=albums', False, $this->context);
-// 	  $this->fb_page_albums_photos_like = file_get_contents($this->url_page.'?fields=albums.fields(photos.fields(likes))', False, $this->context);
-	  
-	  $this->fb_page_albums_photos_like = file_get_contents($this->url_page.'?fields=albums.limit(2).fields(photos.fields(source,likes))', False, $this->context);
-	  
+		//pauls.surfclub?fields=albums.fields(photos.fields(likes))
 	  //pauls.surfclub?fields=albums.fields(photos.fields(source,likes))
 	  //pauls.surfclub?fields=albums.limit(10).fields(photos.fields(source,likes))
 	  //pauls.surfclub?fields=albums.limit(2).fields(photos.fields(source,likes))
+	  $this->fb_page_albums_photos_like = file_get_contents($this->url_page.'?fields=albums.limit(2).fields(photos.fields(source,likes))', False, $this->context);
 	  
 	  $fbUserArray =   $this->extractFbUsers();
 	  $this->fbUsersThatLikeAlbums = $fbUserArray [0];
 	  $this->fbUsersImg50x50SrcThatLikeAlbums = $fbUserArray [1];
 	  $this->fbUsersImg200pxWidthSrcThatLikeAlbums = $fbUserArray [2];
+	  
+	  $this->fbPhotosSrc =$this->extractFbPhotosSrc();
 	}
 
 
@@ -114,6 +115,29 @@ class FbPage{
 		}
 		$result = array($map_UserId_UserName,$map_UserId_UserImg50x50Src,$map_UserId_UserImg200pxWidthSrc );
 		return $result ;
+	}
+	
+	
+	public function extractFbPhotosSrc(){
+		
+		$map_Id_FbPhotoSrc = array();
+		$jsonOject = json_decode($this->fb_page_albums_photos_like);
+		if( (!empty($jsonOject)) &&property_exists($jsonOject, 'albums')){
+			$data = $jsonOject->albums->data;
+			foreach ($data as $album){
+				if(property_exists($album, 'photos')){
+					$data_photos = $album->photos->data;
+					foreach ($data_photos as $photo){
+						if(property_exists($photo, 'source')){
+							$photo_source = $photo->source;
+							$photo_id = $photo->id;
+							$map_Id_FbPhotoSrc[$photo_id] = $photo_source; 
+						}
+					}
+				}
+			}
+		}
+		return $map_Id_FbPhotoSrc ;
 	}
 	
 	
