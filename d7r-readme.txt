@@ -89,9 +89,12 @@ Feeds	7.x-2.0-alpha7
 updated modules:
 Services "7.x-3.3"
 
-creates feeds
-Feed aggregator for windsurfing aggelies
-feed from www.boards.gr
+modules enabled 
+Aggregator ( Aggregates syndicated content (RSS, RDF, and Atom feeds).)
+
+Feed aggregator
+  Feed aggregator for windsurfing aggelies
+  feed from www.boards.gr
 Category
 	windsurf
 ===============================
