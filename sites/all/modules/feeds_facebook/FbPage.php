@@ -10,23 +10,27 @@ class FbPage{
 	private $fbUsersImg200pxWidthSrcThatLikeAlbums ;
 	private $fbPhotosSrc;
 	private $context;
+	private $albums_limit;
 
 
-	function __construct($url_page_str , $context)
+	function __construct($url_page_str , $context,$albums_limit=2)
 	{
 		$this->url_page=$url_page_str;
 		$this->context=$context;
+		$this->albums_limit=$albums_limit;
 
 	}
 
 	
 	function getContents(){
-	  $this->fb_page_albums_contents = file_get_contents($this->url_page.'?fields=albums', False, $this->context);
+		
+		
+	  $this->fb_page_albums_contents = file_get_contents($this->url_page.'?fields=albums.limit('.$this->albums_limit.')', False, $this->context);
 		//pauls.surfclub?fields=albums.fields(photos.fields(likes))
 	  //pauls.surfclub?fields=albums.fields(photos.fields(source,likes))
 	  //pauls.surfclub?fields=albums.limit(10).fields(photos.fields(source,likes))
 	  //pauls.surfclub?fields=albums.limit(2).fields(photos.fields(source,likes))
-	  $this->fb_page_albums_photos_like = file_get_contents($this->url_page.'?fields=albums.limit(2).fields(photos.fields(source,likes))', False, $this->context);
+	  $this->fb_page_albums_photos_like = file_get_contents($this->url_page.'?fields=albums.limit('.$this->albums_limit.').fields(photos.fields(source,likes))', False, $this->context);
 	  
 	  $fbUserArray =   $this->extractFbUsers();
 	  $this->fbUsersThatLikeAlbums = $fbUserArray [0];
