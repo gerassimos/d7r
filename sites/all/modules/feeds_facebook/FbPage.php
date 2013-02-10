@@ -13,6 +13,7 @@ class FbPage{
 	private $albums_limit;
 
 
+
 	function __construct($url_page_str , $context,$albums_limit=2)
 	{
 		$this->url_page=$url_page_str;
@@ -32,15 +33,18 @@ class FbPage{
 	  //pauls.surfclub?fields=albums.limit(2).fields(photos.fields(source,likes))
 	  $this->fb_page_albums_photos_like = file_get_contents($this->url_page.'?fields=albums.limit('.$this->albums_limit.').fields(photos.fields(source,likes))', False, $this->context);
 	  
-	  $fbUserArray =   $this->extractFbUsers();
-	  $this->fbUsersThatLikeAlbums = $fbUserArray [0];
-	  $this->fbUsersImg50x50SrcThatLikeAlbums = $fbUserArray [1];
-	  $this->fbUsersImg200pxWidthSrcThatLikeAlbums = $fbUserArray [2];
-	  
-	  $this->fbPhotosSrc =$this->extractFbPhotosSrc();
+	  $this->populateMemberVariable();
+	 
 	}
 
-
+    function populateMemberVariable(){
+      $fbUserArray =   $this->extractFbUsers();
+      $this->fbUsersThatLikeAlbums = $fbUserArray [0];
+      $this->fbUsersImg50x50SrcThatLikeAlbums = $fbUserArray [1];
+      $this->fbUsersImg200pxWidthSrcThatLikeAlbums = $fbUserArray [2];
+       
+      $this->fbPhotosSrc =$this->extractFbPhotosSrc();
+    }
 
 
 	function __get($name)

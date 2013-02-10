@@ -1,0 +1,13 @@
+name = Feeds: Facebook Page
+description = Adds a Facebook Page feed processor to the Feeds module.
+package = Feeds
+dependencies[] = feeds,feeds_facebook
+core = 7.x
+php = 5.2
+files[] = FeedsFbPageParser.inc
+; Information added by drupal.org packaging script on 2011-02-25
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "Facebook Page"
+datestamp = "1298619245"
+

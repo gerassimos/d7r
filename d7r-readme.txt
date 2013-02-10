@@ -1,4 +1,30 @@
 ===============================
+2013_02_10
+
+module dev 
+feeds_fb_page
+name:Feeds: Facebook Page
+Files:
+feeds_fb_page.info
+feeds_fb_page.install
+feeds_fb_page.module
+FeedsFbPageParser.inc
+
+
+add new node (feed type)
+feeds from paul's surf club page
+http://localhost/d7r/node/106/
+url
+https://graph.facebook.com/pauls.surfclub?fields=albums
+
+2 (dummy)* feed item imported
+
+Feeds importers
+Overridden Feed
+Parser: Facebook Page Parser
+
+
+===============================
 2013_02_09
 
 add new node (feed type)
