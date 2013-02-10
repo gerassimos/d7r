@@ -1,4 +1,39 @@
 ===============================
+2013_02_09
+
+add new node (feed type)
+Feeds from Romain Guy
+http://localhost/d7r/node/95
+
+url
+http://www.curious-creature.org/feed/
+
+10 * feed item imported
+
+Periodic import set TO OFF for feed importer
+Home » Administration » Structure » Feeds importers
+
+
+restore db from /2013-01-30-23:16:30
+run aggregator for 
+Feed aggregator for windsurfing aggelies		
+Next update:never	
+Items: 20 items
+
+related db tables are:
+aggregator_item
+aggregator_*
+
+new modules installed and enabled:
+features-7.x-2.0-beta1
+
+existing modules enabled:
+Feeds News 7.x-2.0-alpha7
+
+
+Main menu added new link
+aggregator for windsurfing aggelies
+===============================
 2013_01_31
 module dev
 new page feeds_facebook_page_users
