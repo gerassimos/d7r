@@ -22,12 +22,15 @@ class FeedsFbPageParser extends FeedsParser {
    * @see FeedsParser::parse()
    */
   public function parse(FeedsSource $source, FeedsFetcherResult $fetcher_result) {
+  	$result = new FeedsParserResult();
     //echo 'FeedsFbPageParser parce';
-    $string = $fetcher_result->getRaw();
-    $result = new FeedsParserResult();
+    $response = $fetcher_result->getRaw();
+    $response_array=explode("\r\n\r\n", $response , 2);
+    list($a_dummy_var,$response_body) = $response_array;
+    
     //echo 'FeedsFetcherResult getRaw()'.$string;
     $fbPage = new FbPage(NULL,NULL);
-    $fbPage->fb_page_albums_contents=$string ;
+    $fbPage->fb_page_albums_contents=$response_body ;
     $fbPage->populateMemberVariable();
     $fbUsers = $fbPage->fbUsersThatLikeAlbums;
     
