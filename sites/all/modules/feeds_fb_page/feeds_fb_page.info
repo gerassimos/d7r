@@ -1,7 +1,8 @@
 name = Feeds: Facebook Page
 description = Adds a Facebook Page feed processor to the Feeds module.
 package = Feeds
-dependencies[] = feeds,feeds_facebook
+dependencies[] = feeds
+dependencies[] = feeds_facebook
 core = 7.x
 php = 5.2
 files[] = FeedsFbPageParser.inc

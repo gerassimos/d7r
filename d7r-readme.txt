@@ -1,4 +1,33 @@
 ===============================
+2013_02_13
+
+Feeds importers
+Overridden Feed
+change Mapping for Node processor
+________________________
+|Source		|Target|
+|---------------|------|
+|Image URL	|photo |
+-----------------------
+
+Import 3 dummy Noded (Node type=Image)
+
+Create Views
+1)Image Collection 
+List of Image Content Type
+
+2)feeds_fb_images_feed_items clone of feeds_defaults_feed_items
+Filter criteria
+Content: Type (= Image) 
+
+module dev 
+feeds_fb_page
+FeedsFbPageParser.inc update getMappingSources()
+
+
+
+
+===============================
 2013_02_10
 
 module dev 

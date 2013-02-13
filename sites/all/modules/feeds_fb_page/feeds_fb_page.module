@@ -16,7 +16,7 @@ function feeds_fb_page_feeds_plugins() {
     $info['FeedsFbPageParser'] = array(
       'name' => 'Facebook Page Parser',
       'description' => 'Parse Facebook Page feeds.',
-      'help' => 'Use Facebook Graph API <a href="http://developers.facebook.com/tools/explorer/?method=GET&path=id">SimplePie</a> to parse Facebook Page feeds.',
+      'help' => 'Use Facebook <a href="http://developers.facebook.com/tools/explorer">Graph API</a> to parse Facebook Page feeds.',
       'handler' => array(
         'parent' => 'FeedsParser',// A plugin needs to derive either directly or indirectly from FeedsFetcher, FeedsParser or FeedsProcessor.
         'class' => 'FeedsFbPageParser',
