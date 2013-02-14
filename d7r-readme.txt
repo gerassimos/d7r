@@ -1,4 +1,16 @@
 ===============================
+2013_02_14
+update view feeds_fb_images_feed_items
+fix issue wiht display image nodes
+example
+http://localhost/d7r/node/106/image-items
+
+update content type image 
+Image » Manage display (Teaser)
+Image style: thumbnail
+Linked to content
+
+===============================
 2013_02_13
 
 Feeds importers
