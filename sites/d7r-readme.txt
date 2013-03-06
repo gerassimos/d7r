@@ -1,4 +1,42 @@
 ===============================
+2013_03_04
+git commit 2013_03_04
+
+module dev feeds_facebook
+new files:
+feeds-facebook-block-item.tpl.php
+feeds-facebook.css
+
+new methods:
+feeds_facebook_theme() 
+	//Implements hook_theme().
+template_preprocess_feeds_facebook_block_item()
+	//That's actually the purpose of the preprocess function: to transform raw data into
+	//variables needed for a theme hook's template or theme function
+
+feeds_facebook_item_list_child_render()
+	// Render the child elements of theme_item_list() before its
+	// data is themed.
+
+
+new functionality: 
+make use of render element
+make use of tpl file
+make use of css file
+	
+
+===============================
+2013_02_17
+
+core modules enabled:
+Testing	7.19	
+(Provides a framework for unit and functional testing.)
+
+module dev feeds_facebook
+update feeds_facebook.info
+new file feeds_facebook.test
+
+===============================
 2013_02_14
 update view feeds_fb_images_feed_items
 fix issue wiht display image nodes

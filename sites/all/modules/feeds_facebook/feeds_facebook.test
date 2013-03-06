@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Tests for the feeds_facebook module
+ */
+class FirstTestCase extends DrupalWebTestCase {
+  
+  public static function getInfo() {
+    return array(
+        'name' => 'feeds_facebook module block functionality',
+        'description' => 'Test blocks in the feeds_facebook module.',
+        'group' => 'feeds_facebook',
+    );
+  }
+  
+  public function setUp() {
+    parent::setUp('feeds_facebook');
+  }
+  
+  
+  public function testBlockInfo() {
+    $info = module_invoke('feeds_facebook', 'block_info');
+
+    $this->assertEqual( 2, count($info), 
+        t('Module defines 2 blocks.') );
+
+    $this->assertTrue(isset($info['feeds_facebook']),
+        t('Module feeds facebook test exists.') );
+    
+    $this->assertTrue(isset($info['feeds_facebook_page_users']), 
+        t('Module feeds facebook page users exists.') );
+  }
+  
+  
+  public function testBlockView() {
+    $data = module_invoke('feeds_facebook', 'block_view',
+        'feeds_facebook');
+    
+    $this->assertTrue(is_array($data),
+        t('Block returns renderable array.'));
+    
+    $this->assertEqual(t('feed of facebook page'), $data['subject'],
+        t('Subject is set'));
+  }
+  
+  
+  
+  
+}

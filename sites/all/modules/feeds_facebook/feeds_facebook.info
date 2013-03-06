@@ -5,6 +5,9 @@ core = 7.x
 ; to create a linked button to configuration page 
 ; in the modules page.
 configure = admin/config/content/feeds_facebook
-files[] = current_posts.test
+files[] = feeds_facebook.module
+files[] = feeds_facebook.test
+
+
 
 
